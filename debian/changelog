@@ -3,7 +3,7 @@ mutt (1.5.21-6) unstable; urgency=low
   * debian/rules: enabled hardened flags; patch by jmm@debian.org
     (Closes: 654148).
 
- -- Antonio Radici <antonio@debian.org>  Fri, 22 Jun 2012 22:47:28 +0100
+ -- Antonio Radici <antonio@dyne.org>  Fri, 22 Jun 2012 22:47:28 +0100
 
 mutt (1.5.21-5) unstable; urgency=low
 
