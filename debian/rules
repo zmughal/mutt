@@ -80,13 +80,11 @@ ifneq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 endif
 
 # CFLAGS
-CFLAGS   = -Wall -g
-CPPFLAGS = -I/usr/include/qdbm
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
+CFLAGS = `dpkg-buildflags --get CFLAGS`
+CFLAGS += -Wall
+LDFLAGS = `dpkg-buildflags --get LDFLAGS`
+CPPFLAGS = `dpkg-buildflags --get CPPFLAGS`
+CPPFLAGS += -I/usr/include/qdbm
 
 # Directory to make the build on
 objdir = $(CURDIR)/obj-$(DEB_HOST_GNU_TYPE)
@@ -103,13 +101,13 @@ ifeq ($(BUILD_PATCHED),yes)
 	$(QUILT) applied > PATCHES
 	autoreconf --install --include=m4
 	cd $(objdir)-patched && \
-	env CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
+	env CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
 	../configure $(confflags)
 	
 	echo '#include "config-debian.h"' >> $(objdir)-patched/config.h
 	
 	# we should just "make mutt" here, but that doesn't work yet
-	cd $(objdir)-patched && $(MAKE) CFLAGS="$(CFLAGS)"
+	cd $(objdir)-patched && $(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 endif
 	
 	touch $@
@@ -123,12 +121,12 @@ $(objdir)/build-stamp: $(objdir)-patched/build-stamp
 	autoreconf --install --include=m4
 	-mkdir $(objdir)
 	cd $(objdir) && \
-	env CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" \
+	env CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)"  \
 	../configure $(confflags)
 	
 	echo '#include "config-debian.h"' >>$(objdir)/config.h
 	
-	cd $(objdir) && $(MAKE) CFLAGS="$(CFLAGS)"
+	cd $(objdir) && $(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 	
 	touch $@
 
